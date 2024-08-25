@@ -13,10 +13,10 @@ future: true
 
 # SNS settings
 RSS: false
-weibo_username: 冰羽翎凝
-zhihu_username: 肝铁侠
+#weibo_username: 冰羽翎凝
+zhihu_username: gan-tie-xia-25
 github_username: BingYu2016
-twitter_username: 2016_yu
+#twitter_username: 2016_yu
 #facebook_username:  huxpro
 #linkedin_username:  firstname-lastname-idxxxx
 
@@ -59,7 +59,7 @@ kramdown:
       start_line: 1
 
 # Disqus settings
-disqus_username: hux
+disqus_username: BingYu2016
 
 # Netease settings
 netease_comment: false
@@ -75,7 +75,7 @@ ga_domain: huangxuan.me
 # Sidebar settings
 sidebar: true # whether or not using Sidebar.
 sidebar-about-description: "摸鱼万岁！"
-sidebar-avatar: https://github.com/Huxpro.png # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: https://s3.bmp.ovh/imgs/2024/08/26/1199ecb660989e56.png # use absolute URL, seeing it's used in both `/` and `/about/`
 
 # Featured Tags
 featured-tags: true # whether or not using Feature-Tags
@@ -91,5 +91,5 @@ page-mathjax: false
 # Friends
 friends:
   [
-    { title: "Ysmmm", href: "https://yansmaoa.github.io/" },
+    { title: "Ysmmm | 实力强劲的队友", href: "https://yansmaoa.github.io/" },
   ]
