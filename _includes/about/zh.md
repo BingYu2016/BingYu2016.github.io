@@ -13,21 +13,16 @@
 #### 目前战绩
 
 - XCPC
-  
-
-        2024CCPC山东 —— 邀请赛铜牌，省赛铜牌
+  2024CCPC山东 —— 邀请赛铜牌，省赛铜牌
 
 - 其他杂七杂八的比赛
-  
   2024GPLT程序设计天梯赛 —— 个人三等奖，团队一等奖
-  
   2024蓝桥杯 —— 国二
-  
   2024睿抗 —— 国三
   
 
 #### 我超强的队友们
 
-我有两位队友，一位是[smls(Rightt)](https://vynor.github.io/)，一位也是[smls(Ysmmm)](yansmaoa.github.io)……
+我有两位队友，一位是[smls(Rightt)](https://vynor.github.io/)，一位也是[smls(Ysmmm)](https://yansmaoa.github.io)……
 
 如果你有兴趣的话可以去拜访一下这两位，我敢向你保证，这两位写的题解绝对比我写的更有看头。
