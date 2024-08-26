@@ -28,6 +28,6 @@
 
 #### 我超强的队友们
 
-我有两位队友，一位是[smls(Rightt)]([https://vynor.github.io/](https://vynor.github.io/))，一位也是[smls(Ysmmm)](yansmaoa.github.io)……
+我有两位队友，一位是[smls(Rightt)](https://vynor.github.io/)，一位也是[smls(Ysmmm)](yansmaoa.github.io)……
 
 如果你有兴趣的话可以去拜访一下这两位，我敢向你保证，这两位写的题解绝对比我写的更有看头。
