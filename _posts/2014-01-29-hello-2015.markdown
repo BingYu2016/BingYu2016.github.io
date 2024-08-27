@@ -1,16 +1,27 @@
 ---
 layout:     post
-title:      "Hello 2015"
+title:      "Hello World!"
 subtitle:   " \"Hello World, Hello Blog\""
-date:       2015-01-29 12:00:00
-author:     "Hux"
+date:       2024-8-27 12:00:00
+author:     "BingYu2016"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
-    - Meta
+    - 碎碎念
 ---
 
-> “Yeah It's on. ”
+> “Blog.begin()”
+
+
+基于某些需求，这一博客随即诞生。
+
+更多信息请看about页面罢，我懒得copy一遍了（）
+
+该博客魔改自Hux大佬的开源项目，感谢Hux大佬
+
+以下是Hux大佬博客的第一篇文章，特保留至此:
+
+---
 
 
 Hux 的 Blog 就这么开通了。
