@@ -4,6 +4,7 @@ title:      "ABC368部分题解"
 subtitle:   "我还挺喜欢这一场的"
 date:       2024-8-29 2:24:00
 author:     "BingYu2016"
+header-img: "img/bg-aubout.jpg"
 catalog: true
 tags:
     - ATCoder
