@@ -1,0 +1,121 @@
+---
+
+layout: post
+title: "ABC370部分题解"
+subtitle: "加油啊，我"
+date: 2024-9-12 22:53:00
+author: "BingYu2016"
+header-img: "img/handan.jpg"
+catalog: true
+tags:
+ - ATCoder
+ - ABC
+ - 题解
+
+---
+
+老惯例，ABC这种简单题就不上题解了
+
+## D - Cross Explosion
+
+考虑使用set存储未被爆破的墙壁，横向和纵向分别存一份方便查找，碰到已有的墙壁则直接爆破，碰到空地则使用`upper_bound`分别在X和Y轴上查询。值得注意的是应对 __该行/列为空、只剩一面墙__ 的情况给出特判避免喜提RE，同时注意炸墙时要同时删除两个set里的墙避免喜提WA
+
+```cpp
+ll h,w,q;
+const int N=4e5+1;
+
+void solve() {
+    cin>>h>>w>>q;
+    set<int> stx[h+1],sty[w+1];
+    for(int i=1;i<=h;i++){
+        for(int j=1;j<=w;j++){
+            stx[i].insert(j);
+            sty[j].insert(i);
+        }
+    }
+    int ans=h*w;
+    while(q--){
+        int x,y;
+        cin>>x>>y;
+        //cout<<x<<' '<<y<<endl;
+        if(stx[x].find(y)!=stx[x].end()){
+            ans--;
+            stx[x].erase(y);
+            sty[y].erase(x);
+        }
+        else{
+            auto xx2=stx[x].upper_bound(y);
+            auto xx1=xx2;
+            if(xx2!=stx[x].begin())xx2--;
+            auto yy2=sty[y].upper_bound(x);
+            auto yy1=yy2;
+            if(yy2!=sty[y].begin())yy2--;
+            //cout<<*(xx1)<<' '<<*(xx2)<<' '<<*(yy1)<<' '<<*(yy2)<<endl; 
+            if(xx1!=stx[x].end()){
+                stx[x].erase(xx1);
+                int xx=*(xx1);
+                sty[xx].erase(x);
+                ans--;
+            }
+            if(xx1!=xx2&&xx2!=stx[x].end()){
+                stx[x].erase(xx2);
+                int xx=*(xx2);
+                sty[xx].erase(x);
+                ans--;
+            }
+            if(yy1!=sty[y].end()){
+                sty[y].erase(yy1);
+                int yy=*(yy1);
+                stx[yy].erase(y);
+                ans--;
+            }
+            if(yy1!=yy2&&yy2!=sty[y].end()){
+                sty[y].erase(yy2);
+                int yy=*(yy2);
+                stx[yy].erase(y);
+                ans--;
+            }
+        }
+        /*for(int k=1;k<=h;k++){
+            for(auto z:stx[k]){
+                cout<<z<<' ';
+            }
+            cout<<endl;
+        }
+        cout<<endl;*/
+    }
+    cout<<ans<<endl;
+}
+```
+
+## E - Avoid K Partition
+
+考虑使用tot存储直到最后一位的合法方案总和，使用map存储对于只考虑前缀和为per的某位时，其合法方案数量。每添加一位，其新增的合法方案数量将会在先前基础上翻倍，但应删去存在区间和为k的情况，这一点通过对map的查询即可快速获得。
+
+```cpp
+void solve() {//已经define int long long 
+    int n,k;
+    int mod=998244353;
+    cin>>n>>k;
+    unordered_map<int,int> mp;
+    int per=0,tot=1;
+    mp[0]=1;
+    for(int i=0;i<n;i++){
+        int x;
+        cin>>x;
+        per+=x;
+        ll add=tot-(mp.count(per-k)?mp[per-k]:0);
+        add+=mod;
+        add%=mod;
+        mp[per]+=add+mod;
+        mp[per]%=mod;
+        tot+=add+mod;
+        tot%=mod;
+        if(i==n-1){
+            cout<<add;
+        }
+    }
+}
+```
+
+~~笑点解析：爆吃数发WA，因为我把mod写成了998224353~~
