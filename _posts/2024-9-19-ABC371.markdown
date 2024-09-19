@@ -1,0 +1,142 @@
+---
+
+layout: post
+title: "ABC371部分题解"
+subtitle: "我恨小数据大暴力"
+date: 2024-9-19 20:36:00
+author: "BingYu2016"
+header-img: "img/bg-wukong.jpg"
+catalog: true
+tags:
+
+- ATCoder
+- ABC
+- 题解
+
+---
+
+并不老样子的，这次只是没有AB但有C
+
+非常好C题，使我的罚时旋转（恼）
+
+## C - Make Isomorphic
+
+ABC特有的小数据大暴力，注意到$N$最大为8，尝试枚举两个图所有可能的点对应关系，共有$N!$种可能，然后我们在每一种可能的排列下尝试将图修改为目标图，并记录下价格，最后将价格最小值输出即可。时间复杂度为$O(N! \ \cdot \ N^2)$
+
+```cpp
+void solve() {
+    int n,m1,m2;
+    cin>>n>>m1;
+    int lk1[n+1][n+1],lk2[n+1][n+1],val[n+1][n+1];
+    memset(lk1,0,sizeof lk1);
+    memset(lk2,0,sizeof lk2);
+    memset(val,0,sizeof val);
+    for(int i=0;i<m1;i++){
+        int x,y;
+        cin>>x>>y;
+        lk1[x][y]=1;
+        lk1[y][x]=1;
+    }
+    cin>>m2;
+    for(int i=1;i<=m2;i++){
+        int x,y;
+        cin>>x>>y;
+        lk2[x][y]=1;
+        lk2[y][x]=1;
+    }
+    for(int i=1;i<n;i++){
+        for(int j=i+1;j<=n;j++){
+            cin>>val[i][j];
+            val[j][i]=val[i][j];
+        }
+    }
+    ll ans=1145141919810,pans=0;
+    vector<int> v;
+    v.push_back(0);
+    for(int i=1;i<=n;i++)v.push_back(i);
+    do{
+        pans=0;
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=n;j++){
+                if(i==j)continue;
+                if(lk1[i][j]!=lk2[v[i]][v[j]]){
+                    pans+=val[v[i]][v[j]];
+                }
+            }
+        }
+        pans/=2;
+        ans=min(ans,pans); 
+    }while(next_permutation(v.begin()+1,v.end()));
+    cout<<ans<<endl;
+}
+```
+
+## D - 1D Country
+
+离散化前缀和板子题，使用`set`存储坐标，再用`map`存储每一个坐标对应的前缀和的值，为确保万无一失，在前后分别额外添加一个数据范围外的点，接下来对set应用二分搜索即可。
+
+```cpp
+void solve() {
+    ll n;
+    cin>>n;
+    ll cnmx[n];
+    set<ll> v;
+    map<ll,ll>vp;
+    for(int i=0;i<n;i++){
+        ll x;
+        cin>>x;
+        v.insert(x);
+        cnmx[i]=x;
+    }
+    for(int i=0;i<n;i++){
+        ll p;
+        cin>>p;
+        vp[cnmx[i]]+=p;
+    }
+    ll per=0;
+    for(auto x:vp){
+        vp[x.first]+=per;
+        per=vp[x.first];
+    }
+    v.insert(-1000000001),v.insert(1000000001);
+    vp[-1000000001]=0,vp[1000000001]=per;
+    int q;
+    cin>>q;
+    while(q--){
+        ll x,y;
+        cin>>x>>y;
+        auto xx=v.lower_bound(x);
+        auto yy=v.upper_bound(y);
+        xx--;yy--;
+        ll l=*(xx),r=*(yy);
+        //cout<<l<<' '<<r<<endl;
+        cout<<vp[r]-vp[l]<<endl;
+    }
+}
+```
+
+## E - I Hate Sigma Problems
+
+我们考虑每一位对答案做出的贡献，对于在某个区间中出现的所有数字，我们只计每一种数字中第一个出现的具有贡献1，其余为0，则我们可以得出以下结论：
+
+- 对于第i位的数字，在包含他的全部l，r中，若对于某个l，其为第一个出现的该种数字，则其对于一切$i \leq r$，该 $[l,r]$中，该位上的数字具有贡献1
+  
+
+用人话来说就是，所有$l \leq i$且$[l,i]$仅包含一个$a_i$时，$l$合法，在$l$合法的前提下，所有满足$i \leq r$的$r$合法，第i位提供的贡献为合法的$l$数量乘以合法的$r$的数量 。
+
+```cpp
+typedef long long ll;
+int n, pre[N];
+
+void solve() {
+    cin >> n;
+    ll ans = 0;
+    for (int i = 1; i <= n; i ++ ){
+        int x;
+        cin >> x;
+        ans += 1ll * (i - pre[x]) * (n - i + 1);
+        pre[x] = i;
+    }
+    cout << ans;
+}
+```
