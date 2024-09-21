@@ -1,0 +1,129 @@
+---
+
+layout: post
+title: "ABC372部分题解"
+subtitle: "战斗，爽！"
+date: 2024-9-22 02:19:00
+author: "BingYu2016"
+header-img: "img/bg-coding.jpg"
+catalog: true
+tags:
+
+- ATCoder
+- ABC
+- 题解
+
+---
+
+一如既往的，跳过ABC这种简单题
+
+## D - Buildings
+
+对于每一栋楼房，其将对其与其左侧首座高于他的楼房之间的所有楼房提供1的贡献。
+
+基于此，我们考虑通过单调栈的思路，将每一栋楼房的高度即编号依次放入栈中并维护其单调，当每一个新加入栈中的楼房的位置与其碰到的第一个大于自己的位置之间即为其贡献区间。
+
+```cpp
+void solve() {
+    int n;
+    cin>>n;
+    pair<int,int>hs;
+    stack<pair<int,int>>st;
+    st.push({11451419,0});
+    ll ans[n+1]={0};
+    for(int i=1;i<=n;i++){
+        hs.second=i;
+        cin>>hs.first;
+        while(st.top().first<=hs.first){
+            st.pop();
+        }
+        ans[st.top().second]++;
+        ans[hs.second]--;
+        st.push(hs);
+    }
+    for(int i=1;i<=n;i++){
+        ans[i]=ans[i-1]+ans[i];
+        cout<<ans[i]<<' ';
+    }
+}
+```
+
+## E - K-th Largest Connected Components
+
+首先，**$K\leq10$** ,其次， **$K\leq10$** ，再接着， **$K\leq10$** ，重要的事情说三遍，这是zyls用数发WA换来的血的教训，abc不看数据范围确实会死的非常惨。
+
+![](https://s3.bmp.ovh/imgs/2024/09/22/48c0ab9e8d24d5b5.png)
+
+![](https://s3.bmp.ovh/imgs/2024/09/22/e58db7c9d1a78188.png)
+
+在并查集的基础上，额外为每一个点添加一个vector存储该连通区域的前十个最大的点，保证每个连通区域均存储在其根上。当两个连通区域合并时，将两个区域的根上的vector进行归并排序保留前十个即可，整体时间复杂度为$O(N \cdot K)$
+
+```cpp
+const int N=2e5+9;
+
+struct bcj{
+    int val;
+    int rt;
+    vector<int> v; 
+}node[N];
+
+int root(int now){
+    if(node[now].rt!=now)node[now].rt=root(node[now].rt);
+    return node[now].rt;
+}
+
+void lk(int a,int b){
+    if(a==b)return;
+    int sz=node[a].v.size()+node[b].v.size();
+    sz=min(sz,10);
+    vector<int> vv;
+    for(int i=0,j=0,k=0;k<sz;k++){
+        if(i==node[a].v.size()){
+            vv.push_back(node[b].v[j]);
+            j++;
+            continue;
+        }
+        if(j==node[b].v.size()){
+            vv.push_back(node[a].v[i]);
+            i++;
+            continue;
+        }
+        if(node[a].v[i]>=node[b].v[j]){
+            vv.push_back(node[a].v[i]);
+            i++;
+        }
+        else{
+            vv.push_back(node[b].v[j]);
+            j++;
+        }
+    }
+    node[a].v=vv;
+    node[b].rt=a;
+}
+
+void solve() {
+    int n,q;
+    cin>>n>>q;
+    for(int i=1;i<=n;i++){
+       node[i].val=i,node[i].rt=i;
+       node[i].v.push_back(i);
+    }
+    while(q--){
+        int a,b,c;
+        cin>>a>>b>>c;
+        if(a==1){
+            if(node[b].rt!=b)b=root(b);
+            if(node[c].rt!=c)c=root(c);
+            lk(b,c);
+        }
+        else{
+            /*for(auto x:node[b].v){
+                cout<<'*'<<x<<' ';
+            }cout<<endl;*/
+            if(node[b].rt!=b)b=root(b);
+            if(node[b].v.size()<c)cout<<"-1"<<endl;
+            else cout<<node[b].v[c-1]<<endl;
+        }
+    }
+}
+```
