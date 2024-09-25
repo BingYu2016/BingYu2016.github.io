@@ -1,0 +1,82 @@
+---
+
+layout: post
+title: "沉迷于分类讨论只会越讨论越难看"
+subtitle: "警钟撅烂"
+date: 2024-9-25 20:54:00
+author: "Super_SB_BingYu2016"
+header-img: "img/bg-nm.jpg"
+catalog: true
+tags:
+ - 碎碎念
+ - 警钟撅烂
+
+---
+
+话不多说，直接看题干：
+
+__在舍伍德，树木是我们的庇护所，我们都是森林的孩子。__
+
+__舍伍德的少校橡树以其雄伟的树叶而闻名，它曾为罗宾汉和他的快乐男女团提供庇护。__
+
+__大橡树在 $i$ 年长出 $i^i$ 片新叶。它在 $1$ 年开始长出 $1$ 片叶子。__
+
+__树叶在树上的寿命为 $k$ 年。换句话说， $i$ 年长出的叶子会在 $i$ 年和 $i+k-1$ 年之间持续生长。__
+
+__罗宾认为偶数是幸运数字。请帮罗宾判断这棵橡树在 $n$ 年的叶子数是否为偶数。__
+
+From:[Codeforces Round 974 (Div. 3)——C](https://codeforces.com/contest/2014/problem/B)
+
+最开始的我想着分情况讨论，很多很多的情况，$k=1，k=2，3 \leq k$，然后还分$n$的奇偶性什么的……
+
+以下是我第一版堆出来的答辩：
+
+```cpp
+void solve() {
+    ll n,k;
+    cin>>n>>k;
+    if(k==1){
+        if(n%2)cout<<"No"<<endl;
+        else cout<<"Yes"<<endl;
+    }
+    else if(k==2){
+        cout<<"No"<<endl;
+    }
+    else {
+        if(n<=k){
+            if(((n+1)/2)%2)cout<<"No"<<endl;
+            else cout<<"Yes"<<endl;
+        }
+        else if(k%2){
+            if(n%2)cout<<"Yes"<<endl;
+            else cout<<"No"<<endl;
+        }
+        else{
+            cout<<"Yes"<<endl;
+        }
+    }
+}
+```
+
+可谓是又臭又长，复杂度极高又难以分析，最终结果也不负众望：
+
+![](https://s3.bmp.ovh/imgs/2024/09/25/e64ca47cc6854908.png)
+
+粗略的阅读题解后，我给出了全新的解，虽不及题解的精准且优美，但至少易于理解：
+
+```cpp
+void solve() {
+    ll n,k;
+    cin>>n>>k;
+    k=min(k,n);
+    int ans=(k/2)+(k%2)*(n%2);
+    if(ans%2)cout<<"NO"<<endl;
+    else cout<<"YES"<<endl;
+}
+```
+
+这让不禁又想起我的知名队友*Rightt*对我的拷打，果然，化繁为简，才是一切优秀题解必备的特质。
+
+分类讨论在这样无需特判的情况下终是浮于表面的分析，寻得其真正的规律与通解才应该是我们的目标
+
+__警钟撅烂__
