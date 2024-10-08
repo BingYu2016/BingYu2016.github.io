@@ -1,0 +1,169 @@
+---
+
+layout: post
+title: "ABC374部分题解"
+subtitle: "抽象"
+date: 2024-10-8 22:00:00
+author: "BingYu2016"
+header-img: "img/bg-nm.jpg"
+catalog: true
+tags:
+
+- ATCoder
+  
+- ABC
+  
+- 题解
+  
+
+---
+
+## C - Separated Lunch
+
+这个数据范围不是一眼先天~~ **蒂艾福爱思** ~~**DFS**圣体（）
+
+典中典DFS板子题,~~平时我都不屑写，但这场为了先抑后扬渲染E题的气氛就加上了~~
+
+```cpp
+ll ans1=0,ans2=0,ans=1145141919810;
+ll k[30];
+void dfs(int n,int x){
+    ans1+=k[x];
+    if(x==n)ans=min(ans,max(ans1,ans2));
+    else dfs(n,x+1);
+    ans1-=k[x],ans2+=k[x];
+    if(x==n)ans=min(ans,max(ans1,ans2));
+    else dfs(n,x+1);
+    ans2-=k[x];
+}
+
+void solve() {
+    int n;
+    cin>>n;
+    for(int i=1;i<=n;i++)cin>>k[i];
+    dfs(n,1);
+    cout<<ans<<endl;
+}
+```
+
+## D - Laser Marking
+
+~~啊哈哈哈哈哈——构式来咯！~~
+
+ABC特有的抽象小数据大暴力，思路其实很简单，就是枚举画线先后顺序以及在此顺序下每条线先画哪一个端点，整体复杂度$O(2^n\cdot n!)$
+
+带着一点计算几何的基础知识，有个计算几何板子应该会容易的多
+
+```cpp
+void solve() {
+    int n;
+    double t,s;
+    cin>>n>>s>>t;
+    pair<poi,poi> l[n+10];
+    for(int i=1;i<=n;i++){
+        cin>>l[i].first>>l[i].second;
+    }
+    vector<int> x;
+    for(int i=1;i<=n;i++)x.push_back(i);
+    ld ans=1145141919810;
+    do{
+        for(int two=0;two<pow(2,n);two++){
+            ld sr=0,tr=0;
+            int T=two;
+            poi now(0,0);
+            for(int i=0;i<n;i++){
+                int fd=T&1;
+                vec le=l[x[i]].first-l[x[i]].second;
+                T>>=1;
+                tr+=le.len();
+                if(fd){
+                    le = l[x[i]].first-now;
+                    sr+=le.len();
+                    now=l[x[i]].second;
+                }
+                else{
+                    le = l[x[i]].second-now;
+                    sr+=le.len();
+                    now=l[x[i]].first;
+                }
+            }
+            ans=min(ans,sr/s+tr/t);
+        }
+    }while(next_permutation(x.begin(),x.end()));
+    cout<<fixed<<setprecision(10)<<ans<<endl;
+}
+```
+
+用了一个先前学计算几何时抄来的点与向量类（即代码中的`poi`和`vec`），真心方便
+
+## E - Sensor Optimization Dilemma 2
+
+翻译过后的题解真心难听懂……
+
+基础思路是二分答案，即二分在目前资金下可以得到的最优产值，但这题的重头戏在于求对于某一个程序达到特定产量需要的最小开支。
+
+我们设要求的产量为$x$，随后分类讨论：
+
+**一 . 当 $x = a \cdot b$ 时**
+
+此时，使用$b$台a机器或$a$台b机器均能完成任务，且此时必定存在两种方案其一为最优方案，易比较得出最优方案为哪一种
+
+**二 . 当 $x=a\cdot b\cdot k$ 时**
+
+与一完全相同的思路，只需在一的基础上乘$k$即可
+
+**三 . 当 $x \le a \cdot b$ 或 $x \gt a \cdot b \quad \&\& \quad x\mod a\cdot b\ne 0 $ 时**
+
+此时，可以将$x$拆成$a\cdot b\cdot k + res$的形式，此时前半段的最优解我们可根据二得出，只需要对res部分考虑即可。因为$res \lt a\cdot b$，所以，只需要遍历最多$b$个$a$或$a$个$b$就一定可以得出最优解。
+
+根据smls的点拨，题解中对于此部分的处理其实尚有优化的余地：题解中分别遍历了取0到b个a和0到a个b的情况，其实只要添加一点预先判断就能将两个循环优化为一个。根据上面我们的分析可以得知，这两次循环的目的其实是为了解决上文三中提到的$res$部分，其余部分则默认采用上文中的一进行解决。根据分析，用于解决情况一二的只有一种类型的机器，而这种机器必定是性价比最优的那一个，我们假设这台机器是机器a，那么必然有$a\cdot q \ge b\cdot p$(购置b台a机器优于购置a台b机器)，那么，其实我们只需要遍历取0到a个b的情况就可以了。具体的代码实现上，我们预先进行这一比较，若和预期结果不符则交换ab，之后默认以a为高性价比机器来执行即可。
+
+```cpp
+struct mec{
+    ll a,b,p,q;
+}m[110];
+ll n,x;
+
+ll mincost(ll num,ll a,ll p,ll b,ll q){
+    ll ans=4e18;
+    if(a*q<b*p){
+        swap(a,b);
+        swap(p,q);
+    }
+    for(int i=0;i<=a;i++){
+        ll pans=i*q;
+        ll res=max(num-b*i,0ll);
+        pans+=(res/a+(res%a!=0))*p;
+        ans=min(ans,pans);
+    }
+    return ans;
+}
+
+bool cheek(ll mid){
+    ll sum=x;
+    for(int i=1;i<=n;i++){
+        sum-=mincost(mid,m[i].a,m[i].p,m[i].b,m[i].q);
+        if(sum<0){
+            return false;
+        }
+    }
+    return true;
+}
+
+void solve() {
+    cin>>n>>x;
+    for(int i=1;i<=n;i++){
+        cin>>m[i].a>>m[i].p>>m[i].b>>m[i].q;
+    }
+    int l = 0, r = 1e9;
+    while (l < r){
+        int mid = (l + r + 1) / 2;
+        if (cheek(mid)) 
+            l = mid;
+        else r = mid - 1;
+    }
+    cout << l;
+}
+```
+
+啥也不是，散会（讲师音）
